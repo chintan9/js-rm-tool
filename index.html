@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/main.js"></script>
+    <div>
+      <h2>Remove Comments from JS Code</h2>
+
+      <textarea
+        id="inputCode"
+        rows="10"
+        cols="50"
+        placeholder="Enter your code here..."
+      ></textarea>
+
+      <button onclick="removeComments()">Remove Comments</button>
+
+      <textarea
+        id="outputCode"
+        rows="10"
+        cols="50"
+        placeholder="Your code without comments will appear here..."
+      ></textarea>
+
+      <button onclick="copyToClipboard()">Copy All</button>
+
+      <script>
+        function removeComments() {
+          var inputCode = document.getElementById('inputCode').value;
+          var urlPattern = /(http|https):\/\/[^\s]*/g;
+          var urls = []; // To hold the URLs temporarily
+          var match;
+          while ((match = urlPattern.exec(inputCode))) {
+            urls.push(match[0]);
+            inputCode = inputCode.replace(match[0], `URL${urls.length - 1}`);
+          }
+          var singleLineComment = /\/\/.*/g;
+          var multiLineComment = /\/\*[\s\S]*?\*\//g;
+          var outputCode = inputCode
+            .replace(singleLineComment, '')
+            .replace(multiLineComment, '');
+          // Replace the placeholders with the original URLs
+          for (var i = 0; i < urls.length; i++) {
+            outputCode = outputCode.replace(`URL${i}`, urls[i]);
+          }
+          document.getElementById('outputCode').value = outputCode;
+        }
+
+        function copyToClipboard() {
+          var outputCode = document.getElementById('outputCode');
+          outputCode.select();
+          document.execCommand('copy');
+        }
+      </script>
+    </div>
+  </body>
+</html>
